@@ -1,0 +1,61 @@
+import tkinter as tk
+from tkinter import messagebox
+import matplotlib.pyplot as plt
+
+# BMI Calculation Function
+def calculate_bmi():
+    try:
+        height = float(height_entry.get()) / 100  # Convert cm to meters
+        weight = float(weight_entry.get())
+        bmi = weight / (height ** 2)
+        
+        if bmi < 18.5:
+            category = 'Underweight'
+        elif 18.5 <= bmi < 24.9:
+            category = 'Normal weight'
+        elif 25 <= bmi < 29.9:
+            category = 'Overweight'
+        else:
+            category = 'Obesity'
+        
+        # Create a new window to display plot
+        top = tk.Toplevel()
+        top.title("BMI Result")
+        
+        plt.figure(figsize=(6, 4))
+        plt.bar(['BMI'], [bmi], color='blue')
+        plt.axhline(y=18.5, color='green', linestyle='--', label='Underweight')
+        plt.axhline(y=24.9, color='yellow', linestyle='--', label='Normal')
+        plt.axhline(y=29.9, color='red', linestyle='--', label='Overweight')
+        plt.ylim(10, 40)
+        plt.title(f'BMI: {bmi:.2f} ({category})')
+        plt.legend()
+        
+        # Embed plot in the new window
+        canvas = plt.gcf().canvas
+        canvas.draw()
+        tk.Label(top, text=f'Your BMI: {bmi:.2f}\nCategory: {category}', font=('Helvetica', 14)).pack(pady=10)
+        plt.show()
+        
+    except ValueError:
+        messagebox.showerror('Invalid Input', 'Please enter valid numbers for height and weight.')
+
+# GUI Setup
+app = tk.Tk()
+app.title('BMI Tracker')
+app.geometry('300x250')
+
+# Labels and Entry Widgets
+tk.Label(app, text='Height (cm):').pack(pady=10)
+height_entry = tk.Entry(app)
+height_entry.pack(pady=5)
+
+tk.Label(app, text='Weight (kg):').pack(pady=10)
+weight_entry = tk.Entry(app)
+weight_entry.pack(pady=5)
+
+# Calculate Button
+tk.Button(app, text='Calculate BMI', command=calculate_bmi).pack(pady=20)
+
+# Run the App
+app.mainloop()
